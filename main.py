@@ -37,7 +37,7 @@ def true_temp_gj():
     cursor = conn.cursor()
     
     # Create a variable for a query to extract the GeoJSON
-    query = "SELECT JSON_AGG(ST_AsGeoJSON(temp_idw_points)) FROM temp_idw_points"
+    query = "SELECT JSON_AGG(ST_AsGeoJSON(idwelevationpoints_in_sde)) FROM idwelevationpoints_in_sde"
     
     # Execute the query
     cursor.execute(query)
@@ -70,7 +70,7 @@ def interp_temp_gj():
     cursor = conn.cursor()
     
     # Create a variable for a query to extract the GeoJSON
-    query = "SELECT JSON_AGG(ST_AsGeoJSON(temp_idw_accuracy)) FROM temp_idw_accuracy"
+    #query = "SELECT JSON_AGG(ST_AsGeoJSON(temp_idw_accuracy)) FROM temp_idw_accuracy"
     
     # Execute the query
     cursor.execute(query)
@@ -102,11 +102,7 @@ def true_elev_gj():
     # Set up cursor
     cursor = conn.cursor()
     
-    # Create a variable for a query to extract the GeoJSON
-    query = "SELECT JSON_AGG(ST_AsGeoJSON(digital_elevation_model_5km_points)) FROM digital_elevation_model_5km_points"
-    
-    # Execute the query
-    cursor.execute(query)
+
     
     # Restructure the GeoJSON into correct format
     true_elev_gj = str(cursor.fetchall()).replace("[([","").replace("],)]","").replace("'","")
