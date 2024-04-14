@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import psycopg2
+!pip install shapely
 from shapely.geometry import Point
 from shapely.wkb import loads
 app = Flask(__name__)
