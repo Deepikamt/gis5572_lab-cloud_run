@@ -10,6 +10,9 @@ ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
 
+# Upgrade pip
+RUN pip install --no-cache-dir --upgrade pip
+
 # Install production dependencies.
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
