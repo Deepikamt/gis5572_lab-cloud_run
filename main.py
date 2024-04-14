@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import psycopg2
+from shapely.geometry import Point
 from shapely.wkb import loads
 app = Flask(__name__)
 # PostGIS database connection details
