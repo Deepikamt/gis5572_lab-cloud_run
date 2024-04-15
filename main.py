@@ -1,58 +1,66 @@
-import psycopg2
 from flask import Flask, jsonify
+import psycopg2
+from shapely.wkb import loads
+from shapely.geometry import Point
+
+# PostGIS database connection details
+dbname = 'gis5572'
+user = 'postgres'
+password = 'Deepika@98'
+host = '35.221.47.162'  # Cloud DB Public IP address
+port = '5432'
+@app.route('/get_polygon', methods=['GET'])
 
 app = Flask(__name__)
 
-def connect_to_db():
+def connect_to_postgres():
     try:
-        conn = psycopg2.connect(
-            dbname='gis5572',
-            user='postgres',
-            password='Deepika@98',
-            host='35.221.47.162',  # Cloud DB Public IP address
-            port='5432'
-        )
-        return conn
-    except psycopg2.OperationalError as e:
-        print(f"Error connecting to the database: {e}")
+        connection = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        return connection
+    except psycopg2.Error as e:
+        print(f"Error connecting to PostgreSQL: {e}")
         return None
 
-def database_to_geojson(table_name):
-    conn = connect_to_db()
-    if conn is None:
-        return {"error": "Failed to connect to the database"}
 
-    try:
-        with conn.cursor() as cur:
-            query = f"""
-                SELECT JSON_BUILD_OBJECT(
-                    'type', 'FeatureCollection',
-                    'features', JSON_AGG(
-                        ST_AsGeoJson({table_name}.*)::json
-                    )
-                )
-                FROM {table_name};
-            """
-            cur.execute(query)
-            data = cur.fetchall()
-            return data[0][0]
-    except psycopg2.Error as e:
-        print(f"Error executing query: {e}")
-        return {"error": "Failed to execute query"}
-    finally:
-        conn.close()
+@app.route('/elev_points', methods=['GET'])
+def get_elev_points():
+    connection = connect_to_postgres()
+    if connection:
+        try:
+            cursor = connection.cursor()
 
-@app.route('/')
-def index():
-    return "The API is working!"
+            # Define table name
+            table_name = 'idwelevationpoints_in_sde'
 
-@app.route('/get_elevation_idw_geojson', methods=['GET'])
-def get_elevation_idw_geojson():
-    ele_idw = database_to_geojson("idwelevationpoints_in_sde")
-    return jsonify(ele_idw)
+            sql_query = f"SELECT shape FROM {table_name};"
+            cursor.execute(sql_query)
+            rows = cursor.fetchall()
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8080)
+            features = []
+            for row in rows:
+                try:
+                    geojson = wkb_to_geojson(row[0])
+                    features.append({"type": "Feature", "geometry": geojson})
+                except Exception as e:
+                    print(f"Error converting geometry: {e}")
+
+            cursor.close()
+            connection.close()
+
+            return jsonify({"type": "FeatureCollection", "features": features})
+        except psycopg2.Error as e:
+            print(f"Error executing SQL query: {e}")
+            return jsonify({"error": "Internal Server Error"}), 500
+    else:
+        return jsonify({"error": "Database Connection Error"}), 500
+
+def wkb_to_geojson(wkb):
+    geometry = loads(wkb, hex=True)
+    return geometry.__geo_interface__
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
 
 
 
