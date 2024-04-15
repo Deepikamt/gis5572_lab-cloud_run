@@ -1,6 +1,7 @@
 import psycopg2
 from flask import Flask
 import os
+import shapely
 # create the Flask app
 app = Flask(__name__)
 # Connect to the PostgreSQL database
