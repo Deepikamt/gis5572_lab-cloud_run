@@ -7,7 +7,7 @@ from shapely.geometry import Point
 dbname = 'gis5572'
 user = 'postgres'
 password = 'Deepika@98'
-host = '35.221.47.162'  # Cloud DB Public IP address
+host = '35.188.53.165'  # Cloud DB Public IP address
 port = '5432'
 @app.route('/get_polygon', methods=['GET'])
 
