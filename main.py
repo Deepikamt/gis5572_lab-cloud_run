@@ -34,7 +34,7 @@ def database_to_geojson(table_name):
     # close the connection
     conn.close()
     # Returning the data
-    return data [0][0]
+    return data[0][0]
 # create the data route
 @app.route('/get_elevation_idw_geojson', methods=['GET'])
 def get_elevation_idw_geojson():
