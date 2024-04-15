@@ -6,7 +6,7 @@ app = Flask(__name__)
 dbname = 'gis5572'
 user = 'postgres'
 password = 'Deepika@98'
-host = '35.188.53.165'  # Cloud DB Public IP address
+host = '35.224.213.125'  # Cloud DB Public IP address
 port = '5432'
 @app.route('/get_polygon', methods=['GET'])
 def get_polygon():
@@ -40,14 +40,6 @@ def wkb_to_geojson(wkb):
     return geometry.__geo_interface__
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
-
-
-
-
-
-
-
 
 
 
