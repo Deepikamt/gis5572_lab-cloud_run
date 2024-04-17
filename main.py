@@ -42,7 +42,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
 
-@app.route('/get_polygon', methods=['GET'])
+@app.route('/temp', methods=['GET'])
 def get_polygon():
     # Connect to the PostGIS database
     connection = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
