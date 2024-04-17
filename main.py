@@ -8,6 +8,7 @@ user = 'postgres'
 password = 'Deepika@98'
 host = '35.224.213.125'  # Cloud DB Public IP address
 port = '5432'
+
 @app.route('/get_polygon', methods=['GET'])
 def get_polygon():
     # Connect to the PostGIS database
@@ -43,7 +44,7 @@ if __name__ == '__main__':
 
 
 @app.route('/temp', methods=['GET'])
-def get_polygon():
+def get_temp_points():
     # Connect to the PostGIS database
     connection = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
     cursor = connection.cursor()
